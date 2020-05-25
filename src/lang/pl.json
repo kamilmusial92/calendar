@@ -1,0 +1,32 @@
+{
+  "lang":"pl",
+    "event": {
+      "title": "Wydarzenie",
+      "status":{
+        "sent": "wysłano",
+        "accepted": "zaakceptowano",
+        "rejected": "odrzucono"
+      }
+     
+    
+    },
+    "events": "Wydarzenia",
+    "used": "Wykorzystane",
+    "button":{
+      "send": "Wyślij",
+      "cancel": "Anuluj",
+      "remove": "Usuń"
+    },
+    "from": "od",
+    "to": "do",
+    "secondago": "kilka sekund temu",
+    "time":"czas",
+    "statistics":{
+        "date":"Data",
+        "hours": "Godziny",
+        "category":"Kategoria",
+        "filter":"Filtr"
+    }
+   
+ 
+}

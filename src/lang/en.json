@@ -1,0 +1,29 @@
+{
+  "lang":"en",
+    "event": {
+      "title": "Event",
+      "status":{
+        "sent": "sent",
+        "accepted": "accepted",
+        "rejected": "rejected"
+      }
+    },
+    "events": "Events",
+    "used": "Used",
+    "button":{
+      "send": "Send",
+      "cancel": "Cancel",
+      "remove": "Remove"
+    },
+    "from": "from",
+    "to": "to",
+    "secondago": "a few seconds ago",
+    "time":"time",
+    "statistics":{
+      "date":"Date",
+      "hours": "Hours",
+      "category":"Category",
+      "filter":"Filter"
+  }
+   
+}
