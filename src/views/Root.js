@@ -20,7 +20,7 @@ const Root = () => (
         <Switch>
           <Route exact path={routes.login} component={LoginPage} />
           <Route exact path={routes.logout} component={LogoutPage} />
-          <Route exact path={routes.home} render={() => <Redirect to="/calendar" />} />
+          <Route exact path={routes.home} render={() => <Redirect to="/calendar/dashboard" />} />
           <Route exact path={routes.calendar} component={Calendar} />
           <Route exact path={routes.statistics} component={Statistics} />
           
