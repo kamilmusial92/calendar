@@ -10,6 +10,8 @@ import LoginPage from 'views/LoginPage';
 import LogoutPage from 'views/LogoutPage';
 import 'theme/bootstrap.css';
 
+
+
 const Root = () => (
  
   <Provider store={store}>

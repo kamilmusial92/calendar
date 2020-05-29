@@ -44,6 +44,7 @@ const StyledDropdownButton=styled.div`
 const StyledDates=styled.div`
   display:flex;
   min-width: 100px;
+ 
 `;
 
 const StyledParagraph=styled(Paragraph)`
@@ -193,7 +194,7 @@ console.log(calendarEvents)
     <UserPageTemplate >
       <div className="col-md-10">
       <StyledSelectDates>
-        <StyledDates>
+        <StyledDates >
        
          
           <DatePicker

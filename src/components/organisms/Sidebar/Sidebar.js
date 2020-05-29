@@ -132,17 +132,15 @@ class Sidebar extends Component
 
 
       <StyledLinksList>
-        <li>
-          <ButtonIcon  as={NavLink} to="/statistics" icon={statisticsIcon}  />
-        </li> 
-
-         
+       
 
         <li>
           <ButtonIcon  as={NavLink} to="/calendar" icon={calendarIcon}  />
         </li>
       
-
+        <li>
+          <ButtonIcon  as={NavLink} to="/statistics" icon={statisticsIcon}  />
+        </li> 
       
 
       

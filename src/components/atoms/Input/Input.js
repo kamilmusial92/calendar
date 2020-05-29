@@ -8,12 +8,15 @@ const Input = styled.input`
   
   border: none;
   border-radius: 50px;
+  outline: none;
 
   ::placeholder {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: ${({ theme }) => theme.grey300};
   }
+
+  
 
   ${({search}) =>
     search && css`

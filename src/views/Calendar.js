@@ -40,6 +40,9 @@ const StyledGrip = styled.div`
    display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  @media (max-width: 768px) {
+    display:none;
+    }
 `;
 
 const StyledToasts = styled.div`
@@ -166,7 +169,11 @@ const StyledEventList=styled.div`
     
     fetchToasts();
 
-    let draggableEl = document.getElementById("external-events");
+   let draggableEl = document.getElementById("external-events");
+   if(draggableEl)
+   {
+
+   
     new Draggable(draggableEl, {
       itemSelector: ".fc-event",
       eventData: function(eventEl) {
@@ -183,8 +190,8 @@ const StyledEventList=styled.div`
           borderColor:BorderColor,
           status: 0,
           userid: localStorage.getItem('userID'),
-          userAvatar: localStorage.getItem('userAvatar'),
-          userSurname: localStorage.getItem('userSurname'),
+          avatar: localStorage.getItem('userAvatar'),
+          surname: localStorage.getItem('userSurname'),
           
         };
       
@@ -194,6 +201,8 @@ const StyledEventList=styled.div`
      
       
     });
+  }
+
 
 
   }
@@ -216,8 +225,8 @@ const StyledEventList=styled.div`
         allDay:eventReceive.event.allDay,
         status:0,
         userid: localStorage.getItem('userID'),
-        userAvatar: localStorage.getItem('userAvatar'),
-        userSurname: localStorage.getItem('userSurname'),
+        avatar: localStorage.getItem('userAvatar'),
+        surname: localStorage.getItem('userSurname'),
         borderColor:eventReceive.event.borderColor
         }
       ]
@@ -226,16 +235,33 @@ const StyledEventList=styled.div`
    eventReceive.event.remove();
   }
 
-  eventRender = eventRender => {
+  eventRender = ({eventRender,event,el}) => {
 
+    const status = event.extendedProps.status;
+    const start=moment(event.start).format("HH:mm");
+    const end=moment(event.end).format("HH:mm");
+    const mark=event.title;
+    const surname=event.extendedProps.surname;
+    const avatar=event.extendedProps.avatar;
 
-    if(eventRender.event.extendedProps.status>0)
+    const fccontent="<div class='fc-content'><img class='fc-avatar' src='"+avatar+"'><div class='fc-content2'>";
+
+    const fctime=(event.allDay==0) ? "<span class='fc-time'>"+start+" - "+end+"</span>" : "";
+
+    const fctitle="<span class='fc-title'>"+mark+" <span class='fc-status "+ (status == 2 ? 'checked' : '') + (status == 1 ? 'question' : '') +"'></span></span><span class='fc-surname'>"+surname+"</span></div></div>";
+    
+    const fcresizable=(status==0) ? "<div class='fc-resizer fc-end-resizer'></div>" : "";
+    
+    el.innerHTML=fccontent+fctime+fctitle+fcresizable;
+
+    if(status>0)
     {
-   
-      eventRender.el.classList.remove('fc-resizable');
-      eventRender.el.classList.remove('fc-resizable');
-      eventRender.el.classList.remove('fc-draggable');
+      
+      el.classList.remove('fc-resizable');
+      el.classList.remove('fc-resizable');
+      el.classList.remove('fc-draggable');
     } 
+        
   
   }
   
@@ -374,7 +400,7 @@ const StyledEventList=styled.div`
   }
 
   Toasts = (data) =>{
- 
+
     this.setState({ 
          
       toasts:[
@@ -386,7 +412,8 @@ const StyledEventList=styled.div`
           start: data.start,
           end: data.end,
           allDay: data.allDay,
-          status: 'sent'
+          status: 'sent',
+          avatar:localStorage.getItem('userAvatar')
         }
       ],
       toastListVisible: true,
@@ -478,7 +505,7 @@ const StyledEventList=styled.div`
               }}
               
               rerenderDelay={10}
-              
+              height="auto"
               locale={this.languageSwitch(pageContext.t('lang'))}
               editable={true}
               droppable={true}
@@ -515,20 +542,12 @@ const StyledEventList=styled.div`
                 </StyledWraperList>
               </StyledEvents>
 
-              <StyledEvents  pagecolor={pageContext.pageColor} activecolor={pageContext.sidebarColor}>
-                  
-              <StyledHeading  as="h1">{pageContext.t('used')}</StyledHeading>
           
-              <StyledWraperList>
-    
-                   
-              </StyledWraperList>
-            </StyledEvents>
             </StyledGrip>
           </div>
           <StyledToasts isVisible={toastListVisible}>
           {toasts.map(toast => (
-            <Toast title={toast.title} content={toast.content} start={toast.start} end={toast.end} allday={toast.allDay} status={toast.status} key={toast.id}  />
+            <Toast title={toast.title} content={toast.content} start={toast.start} end={toast.end} allday={toast.allDay} status={toast.status} key={toast.id} avatar={toast.avatar}  />
           ))}
           </StyledToasts>
      

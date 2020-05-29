@@ -112,7 +112,7 @@ const StyledCard = styled.div `
 
 
 
-const Toast = ({  pageContext, title, content, start, end, allday,status }) => {
+const Toast = ({  pageContext, title, content, start, end, allday,status,avatar }) => {
 
  
 
@@ -121,7 +121,7 @@ const Toast = ({  pageContext, title, content, start, end, allday,status }) => {
 
         <StyledCard pagecolor={pageContext.pageColor}>
             <HeaderWrapper>
-                <StyledAvatar src={`http://localhost:8000/storage/avatars/avatar.png`} />
+                <StyledAvatar src={avatar} />
                
                 <StyledHeading>{title}</StyledHeading>
                

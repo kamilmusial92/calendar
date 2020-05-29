@@ -93,7 +93,7 @@ const StyledHead = styled.div`
 `;
 
 
-const useridlocal=localStorage.getItem('userID');
+
 
 const statusiconChecked='checked' ;
 const statusiconQuestion='question' ;
@@ -152,12 +152,13 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
-          /**
-           * Alert if clicked on outside of element
-           */
+         
           function handleClickOutside(event) {
             if (ref.current && !ref.current.contains(event.target)) {
-                handleClose();
+              if(window.innerWidth > 768)
+              {  
+              handleClose();
+              }
             }
           }
       
@@ -171,8 +172,8 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
       }
 
     const wrapperRef = useRef(null);
-    useOutsideAlerter(wrapperRef);
-   
+      useOutsideAlerter(wrapperRef);
+    
     
       
  
@@ -188,12 +189,12 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
     <Paragraph>
       <b>{pageContext.t('from')} </b>
     
-      {datepicker(pageContext,(userid ==useridlocal && status == 0) ? 'active' : "disabled","start",start,allday,setStartDate,setEndDate)}
+      {datepicker(pageContext,(userid ==localStorage.getItem('userID') && status == 0) ? 'active' : "disabled","start",start,allday,setStartDate,setEndDate)}
       </Paragraph>
       
       <Paragraph>
       <b> {pageContext.t('to')} </b> 
-      {datepicker(pageContext,(userid ==useridlocal && status == 0) ? 'active' : "disabled","end",end,allday,setEndDate,setEndDate)}
+      {datepicker(pageContext,(userid ==localStorage.getItem('userID') && status == 0) ? 'active' : "disabled","end",end,allday,setEndDate,setEndDate)}
       </Paragraph>
   
 
@@ -231,7 +232,7 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
           onBlur={handleBlur}
          
           className="form-control form-control-lg" 
-          disabled={(userid ==useridlocal && status == 0) ? '' : "true"} 
+          disabled={(userid ==localStorage.getItem('userID') && status == 0) ? '' : "true"} 
           
           >
 
@@ -257,14 +258,14 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
             as="textarea"
             onChange={handleChange}
             onBlur={handleBlur}
-
-            disabled={(userid ==useridlocal && status == 0) ? '' : "true"} 
+           
+            disabled={(userid ==localStorage.getItem('userID') && status == 0) ? '' : "true"} 
             value={values.content}
           />
         <StyledWraperButtons>
           <StyledButtons>
 
-            { userid ==useridlocal && status == 0 ?  
+            { userid ==localStorage.getItem('userID') && status == 0 ?  
           
 
             <Button type="submit" activecolor={pageContext.sidebarColor}>
@@ -280,7 +281,7 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
             </Button>
 
           </StyledButtons>
-          { userid == useridlocal && status == 0 ? 
+          { userid == localStorage.getItem('userID') && status == 0 ? 
             <StyledButtonRemove type="button" onClick={ handleRemove}  remove >
             {pageContext.t('button.remove')}
             </StyledButtonRemove>

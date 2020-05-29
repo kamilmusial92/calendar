@@ -51,7 +51,7 @@ export const authenticate = (username, password) => dispatch => {
   dispatch({ type: AUTH_REQUEST });
 
   return axios
-    .post('http://localhost:8000/api/v1/login', {
+    .post('https://admincms.intervi.pl/api/v1/login', {
       username,
       password,
     })
@@ -64,7 +64,7 @@ export const authenticate = (username, password) => dispatch => {
       dispatch({ type: AUTH_SUCCESS, payload });
     })
     .catch(err => {
-      console.log(err);
+      console.log(err.response);
       dispatch({ type: AUTH_FAILURE });
     });
 };
@@ -76,7 +76,7 @@ export const fetchToasts = () => (dispatch, getState) => {
   OptionsAuth(getState().token);
 
   return axios
-    .get('http://localhost:8000/api/v1/gettoasts', {
+    .get('https://admincms.intervi.pl/api/v1/gettoasts', {
      
     })
     .then(({data}) => {
@@ -89,7 +89,7 @@ export const fetchToasts = () => (dispatch, getState) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      console.log(err.response);
       dispatch({ type: FETCHTOASTS_FAILURE });
     });
 };
@@ -101,7 +101,7 @@ export const fetchEventsFromCalendar = () => (dispatch, getState) => {
   OptionsAuth(getState().token);
 
   return axios
-    .get('http://localhost:8000/api/v1/geteventsfromcalendar', {
+    .get('https://admincms.intervi.pl/api/v1/geteventsfromcalendar', {
      
     })
     .then(({data}) => {
@@ -114,7 +114,7 @@ export const fetchEventsFromCalendar = () => (dispatch, getState) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      console.log(err.response);
       dispatch({ type: FETCHEVENTSFROMCALENDAR_FAILURE });
     });
 };
@@ -125,7 +125,7 @@ export const fetchEvents = () => dispatch  => {
   dispatch({ type: FETCHEVENTS_REQUEST });
 
   return axios
-    .get('http://localhost:8000/api/v1/getevents')
+    .get('https://admincms.intervi.pl/api/v1/getevents')
     .then(({data}) => {
       
       dispatch({
@@ -136,7 +136,7 @@ export const fetchEvents = () => dispatch  => {
       });
     })
     .catch(err => {
-      console.log(err);
+      console.log(err.response);
       dispatch({ type: FETCHEVENTS_FAILURE });
     });
 };
@@ -147,14 +147,14 @@ export const addItemToCalendar = (values) => (dispatch, getState) => {
   dispatch({ type: ADD_ITEM_TO_CALENDAR_REQUEST });
 
   OptionsAuth(getState().token);
-console.log(values)
+
   return axios
-    .post('http://localhost:8000/api/v1/additem', {
+    .post('https://admincms.intervi.pl/api/v1/additem', {
    
       values
     })
     .then(({data}) => {
-     console.log(data)
+  
      dispatch({
         type: ADD_ITEM_TO_CALENDAR_SUCCESS,
         payload: {
@@ -175,7 +175,7 @@ export const updateToastStatus = (data) => (dispatch, getState) => {
   OptionsAuth(getState().token);
 
   return axios
-    .post('http://localhost:8000/api/v1/updatetoaststatus', {
+    .post('https://admincms.intervi.pl/api/v1/updatetoaststatus', {
    
       data
     })
