@@ -128,18 +128,18 @@ class Sidebar extends Component
     
     return (
     <StyledWrapper activeColor={pageContext.sidebarColor}>
-      <StyledLogoLink to="/" />
+      <StyledLogoLink to="/calendar" />
 
 
       <StyledLinksList>
        
 
         <li>
-          <ButtonIcon  as={NavLink} to="/calendar" icon={calendarIcon}  />
+          <ButtonIcon  as={NavLink} to="/calendar/dashboard" icon={calendarIcon}  />
         </li>
       
         <li>
-          <ButtonIcon  as={NavLink} to="/statistics" icon={statisticsIcon}  />
+          <ButtonIcon  as={NavLink} to="/calendar/statistics" icon={statisticsIcon}  />
         </li> 
       
 
@@ -163,7 +163,7 @@ class Sidebar extends Component
         </li>
       </StyledLangList>
 
-      <StyledLogoutButton as={NavLink} to="/logout" icon={logoutIcon} />
+      <StyledLogoutButton as={NavLink} to="/calendar/logout" icon={logoutIcon} />
     </StyledWrapper>
     );
   }
