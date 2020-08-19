@@ -12,7 +12,8 @@ import {
 } from 'react-switch-lang';
 import en from 'lang/en.json';
 import pl from 'lang/pl.json';
-
+import { connect } from 'react-redux';
+import {  getAuthUserInfo as getAuthUserInfoAction } from 'actions/user';
 
 
 setTranslations({ en, pl });
@@ -21,31 +22,26 @@ setDefaultLanguage(localStorage.getItem('langType') ? localStorage.getItem('lang
 class MainTemplate extends Component {
   state = {
     pageColor: localStorage.getItem('pageColor') ? localStorage.getItem('pageColor') : 'sun',
-    sidebarColor: 'iv'
+    //sidebarColor: '#730FFF'
+    
   };
 
+ 
+  componentDidMount(){
 
-  componentDidMount() {
-    this.setCurrentPage();
-  }
+    const {   getAuthUserInfo} = this.props;
+  
+    getAuthUserInfo();
 
-  componentDidUpdate(prevProps, prevState) {
-    this.setCurrentPage(prevState);
 
-  }
+   
+    
+  }  
 
-  setCurrentPage = (prevState = '') => {
-    const pageTypes = ['twitters', 'articles', 'notes'];
-    const {
-      location: { pathname },
-    } = this.props;
 
-    const [currentPage] = pageTypes.filter(page => pathname.includes(page));
-
-    if (prevState.pageType !== currentPage) {
-      this.setState({ pageType: currentPage });
-    }
-  };
+  /*handleChangeSidebarColor = (color) => {
+    this.setState({ sidebarColor: color.hex });
+  };*/
 
   
   handleSetPageColor = (type)  => () => {
@@ -78,11 +74,12 @@ class MainTemplate extends Component {
  
 
   render() {
-    const { children,t } = this.props;
-    const { pageColor,sidebarColor } = this.state;
+    const { children,t, authuserinfo } = this.props;
+    const { pageColor, } = this.state;
     const handleSetPageColor=this.handleSetPageColor;
-  
-    
+   
+    const sidebarColor=authuserinfo && authuserinfo.company && authuserinfo.company.sidebarcolor;
+
     return (
       <div>
         <PageContext.Provider value={{t,pageColor,sidebarColor,handleSetPageColor}} >
@@ -102,4 +99,21 @@ MainTemplate.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default translate(withRouter(MainTemplate));
+
+const mapStateToProps = state => {
+
+  const {  authuserinfo} = state;
+  
+  return {  authuserinfo};
+};
+
+const mapDispatchToProps = dispatch => ({
+  
+  getAuthUserInfo: () => dispatch(getAuthUserInfoAction()),
+ 
+});
+
+export default translate(connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withRouter(MainTemplate)));

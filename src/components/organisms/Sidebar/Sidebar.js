@@ -8,13 +8,15 @@ import Switch from 'components/atoms/Input/Switch';
 import logoutIcon from 'assets/icons/logout.svg';
 import calendarIcon from 'assets/icons/calendar.svg';
 import bellIcon from 'assets/icons/bell.svg';
+import cautionIcon from 'assets/icons/caution.svg';
+
 import statisticsIcon from 'assets/icons/statistics.svg';
 import sunnyIcon from 'assets/icons/sunny.svg';
 import moonIcon from 'assets/icons/moon.svg';
 import settingsIcon from 'assets/icons/settings.svg';
 import polandIcon from 'assets/icons/poland.svg';
 import englandIcon from 'assets/icons/uk.svg';
-import logoIcon from 'assets/icons/interactivelogo.svg';
+import { connect } from 'react-redux';
 
 
 import withContext from 'hoc/withContext';
@@ -27,7 +29,7 @@ const StyledWrapper = styled.nav`
   padding: 25px 0;
   width: 100px;
   height: 100vh;
-  background-color: ${({ activeColor, theme }) => (activeColor ? theme[activeColor] : theme.note)};
+  background-color: ${({ activeColor}) => activeColor};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -35,7 +37,7 @@ const StyledWrapper = styled.nav`
   flex-wrap:nowrap;
   z-index:9998;
 
-    @media (max-width: 768px) {
+  ${({ theme }) => theme.mq.tablet} {
      padding:10px;
       width: 100vw;
       height:50px;
@@ -48,15 +50,20 @@ const StyledLogoLink = styled(NavLink)`
   display: block;
   width: 100px;
   height: 67px;
-  background-image: url(${logoIcon});
+  background-image: url(${({logo}) => logo});
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 80%;
   border: none;
   margin-bottom: 10vh;
   
-    @media (max-width: 768px) {
+  ${({ theme }) => theme.mq.tablet} {
     margin:0;
+    
+    }
+
+    ${({ theme }) => theme.mq.mobile} {
+    display:none;
     
     }
 `;
@@ -64,7 +71,7 @@ const StyledLogoLink = styled(NavLink)`
 const StyledLogoutButton = styled(ButtonIcon)`
   margin-top: auto;
     
-    @media (max-width: 768px) {
+  ${({ theme }) => theme.mq.tablet} {
       display: flex;
      
    
@@ -76,7 +83,7 @@ const StyledLinksList = styled.ul`
   padding: 0;
   list-style: none;
 
-  @media (max-width: 768px) {
+  ${({ theme }) => theme.mq.tablet} {
     display: flex;
   
     }
@@ -89,7 +96,7 @@ const StyledLangList = styled.ul`
   padding: 0;
   list-style: none;
   
-    @media (max-width: 768px) {
+  ${({ theme }) => theme.mq.tablet} {
       display: flex;
       
     }
@@ -108,11 +115,31 @@ display: flex;
   justify-content: space-around;
   bottom: 200px;
   padding: 0;
-  @media (max-width: 768px) {
+  ${({ theme }) => theme.mq.tablet} {
       display: flex;
      
       
     }
+`;
+
+const StyledAlertIcon=styled.div`
+    width:27px;
+    height:27px;
+    background-color: hsl(0, 100%, 60%);
+    border-radius:20px;
+    float: right;
+  
+    background-image:url(${({icon}) => icon});
+    background-repeat:no-repeat;
+    background-position:50% 50%;
+    background-size:60%;
+
+    ${({ theme }) => theme.mq.tablet} {
+      width:17px;
+      height:17px;
+
+    }
+  
 `;
 
 class Sidebar extends Component 
@@ -122,26 +149,49 @@ class Sidebar extends Component
   
 
   render() {
-    const  { pageContext,handleSetLanguage,handleSetPageColor } =this.props;
+    
+    const  {eventsfromcalendar, pageContext,handleSetLanguage,handleSetPageColor, authuserinfo} =this.props;
 
     const langType=localStorage.getItem('langType');
+    const logocompany=authuserinfo && authuserinfo.company && authuserinfo.company.logo ;
     
+    const roleAdmin = authuserinfo && authuserinfo.roles && authuserinfo.roles.filter(role=>role.name=='SuperAdmin').length;
+      const roleCustomer = authuserinfo && authuserinfo.roles && authuserinfo.roles.filter(role=>role.name=='Customer').length ;
+      const permission = authuserinfo && authuserinfo.workplace && authuserinfo.workplace.permissions  && authuserinfo.workplace.permissions.filter(perm=>perm.name=='AcceptableEvents').length;
+   
+
+      const notificationalert=eventsfromcalendar.filter(element => element.status == 1 );
+
     return (
     <StyledWrapper activeColor={pageContext.sidebarColor}>
-      <StyledLogoLink to="/calendar" />
+      <StyledLogoLink logo={logocompany} to="/" />
 
 
       <StyledLinksList>
        
 
         <li>
-          <ButtonIcon  as={NavLink} to="/calendar/dashboard" icon={calendarIcon}  />
+          <ButtonIcon  as={NavLink} to="/calendar" icon={calendarIcon}  />
         </li>
       
         <li>
-          <ButtonIcon  as={NavLink} to="/calendar/statistics" icon={statisticsIcon}  />
+          <ButtonIcon  as={NavLink} to="/statistics" icon={statisticsIcon}  />
         </li> 
-      
+        {roleAdmin || roleCustomer || permission ?
+        <li>
+          <ButtonIcon  as={NavLink} to="/notifications" icon={bellIcon}  >
+          {notificationalert.length ?
+           <StyledAlertIcon  icon={cautionIcon}  />
+           :''
+          }
+          </ButtonIcon>
+        </li>
+        : ''
+        }
+
+        <li>
+          <ButtonIcon  as={NavLink} to="/settings" icon={settingsIcon}  />
+        </li>
 
       
       </StyledLinksList>
@@ -163,7 +213,7 @@ class Sidebar extends Component
         </li>
       </StyledLangList>
 
-      <StyledLogoutButton as={NavLink} to="/calendar/logout" icon={logoutIcon} />
+      <StyledLogoutButton as={NavLink} to="/logout" icon={logoutIcon} />
     </StyledWrapper>
     );
   }
@@ -184,7 +234,19 @@ class Sidebar extends Component
     pageContext: PropTypes.shape({
       sidebarColor:'notes',
       pageColor:'sun'
-    })
+      
+    }),
+    pageurl:window.location.pathname.substr(1)
   };
 
-export default withContext(Sidebar);
+  const mapStateToProps = state => {
+
+    const {  authuserinfo, eventsfromcalendar} = state;
+  
+    return {  authuserinfo,eventsfromcalendar };
+  };
+
+export default  connect(
+  mapStateToProps,
+  null,
+)(withContext(Sidebar));

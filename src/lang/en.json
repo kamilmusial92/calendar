@@ -6,14 +6,27 @@
         "sent": "sent",
         "accepted": "accepted",
         "rejected": "rejected"
-      }
+      },
+      "surname":"Full Name",
+      "dateofnotification":"Date of notification"
     },
     "events": "Events",
     "used": "Used",
     "button":{
       "send": "Send",
       "cancel": "Cancel",
-      "remove": "Remove"
+      "remove": "Remove",
+      "accept": "Accept",
+      "reject": "Reject",
+      "save": "Save",
+      "back": "Back",
+      "inactive": "Inactive",
+      "active": "Active",
+      "changelogotype": "Change logotype",
+      "changecolor": "Change color",
+      "permissions": "Permissions",
+      "register":"Sign Up",
+      "signin":"Sign In"
     },
     "from": "from",
     "to": "to",
@@ -24,6 +37,82 @@
       "hours": "Hours",
       "category":"Category",
       "filter":"Filter"
+  },
+  "table":{
+    "action":"Action",
+    "view":"View"
+  },
+  "card":{
+    "edit": "Edit",
+    "changepass": "Change password",
+    "userdata": "User data",
+    "users": "Employee list", 
+    "customers": "Customer list",
+    "stand": "Workplace",
+    "workplaces": "Workplace list",
+    "workplaceedit": "Edit workplace",
+    "workplacecreate":"Create new workplace",
+    "changeuserdata": "Change user data",
+    "adduser":"Add new user", 
+    "changepassword": "Change password",
+    "uploadimage":"Upload Image",
+    "workplacepermission":"Workplace permissions",
+    "signup":"Sign up",
+    "signin":"Sign in",
+    "arleadyregistered":"Arleady registered?",
+    "clickhere":"Click here",
+    "registersuccess":"The user has been registered. The login details we sent to your e-mail address. ",
+    "notifications":"Notifications",
+    "statistics":"Statistics",
+    "validate":{
+    
+      "incorrectoldpass": "The old password is incorrect.",
+      "passwordsdonotmatch": "The confirm password field is not the same as the new password field.",
+      "passwordsdonotmatchregister": "The confirm password field is not the same as the password field.",
+      "tooshort":"Too short",
+      "invalidemail":"Invalid email",
+      "required": "Required"
+     
+    }
+  },
+  "alerts":{
+    "datahasbeenchanged": "The data has been changed.",
+    "dataauthhasbeenchanged": "The user data has been changed.",
+    "passwordchanged": "The password has been changed.",
+    "uploadsuccess": "The Avatar has been changed. It may take a few minutes.",
+    "uploadlogotypesuccess": "The Logotype has been changed. It may take a few minutes.",
+    "workplacehasbeenchanged":"The Workplace has been changed.",
+    "userhasbeenadded": "The user has been added.",
+    "sidebarhasbeenchanged": "The Theme Color has been changed.",
+    "userhasworkplace":"The Workplace can't be deleted, because somebody has this workplace!",
+    "workplacehasbeencreated": "The Workplace has been created.",
+    "workplacehasbeenremoved": "The Workplace has been removed.",
+    "changestatussuccess": "The user status has been changed.",
+    "deleteusersuccess": "The user has been deleted.",
+    "permissionhasbeenchanged": "The permissions has been changed.",
+    "customercreated":"The customer has been created.",
+    "eventaccepted":"The event has been accepted.",
+    "eventrejected":"The event has beend rejected."
+  },
+  "company":{
+    "name":"Company",
+    "url": "Website",
+    "data": "Company data",
+    "add":"Add new customer"
+  },
+  "user":{
+    "active":"Active",
+    "inactive": "Inactive"
+  },
+  "version":"Access",
+  "name": "Name",
+  "input":{
+    "fullname":"Full Name",
+    "company": "Company Name",
+    "password": "Password",
+    "confirmpassword": "Confirm password",
+    "or":"OR"
   }
+  
    
 }

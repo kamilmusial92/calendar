@@ -1,9 +1,13 @@
 import React, { Component }  from 'react'
 import styled from 'styled-components';
 import Heading from 'components/atoms/Heading/Heading';
-import UserPageTemplate from 'templates/UserPageTemplate';
+import CalendarTemplate from 'templates/CalendarTemplate';
 import NewItemBar from 'components/organisms/NewItemBar/NewItemBar';
 import Toast from 'components/molecules/Toast/Toast';
+import Spinner from 'components/atoms/Spinner/Spinner';
+import HeaderWrapper from 'components/atoms/HeaderWrapper/HeaderWrapper';
+import Card from 'components/molecules/Card/Card';
+import ListMenu from 'components/atoms/ListMenu/ListMenu';
 
 import PropTypes from 'prop-types';
 import FullCalendar from '@fullcalendar/react'
@@ -15,7 +19,7 @@ import enLocale from '@fullcalendar/core/locales/en-gb';
 import withContext from 'hoc/withContext';
 import '../theme/main.scss' // webpack must be configured to do this
 
-import { fetchEvents,fetchEventsFromCalendar, fetchToasts, updateToastStatus as updateToastStatusAction } from 'actions';
+import { fetchEvents, fetchToasts, updateToastStatus as updateToastStatusAction } from 'actions';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -60,35 +64,24 @@ const StyledToasts = styled.div`
   
 `;
 
+const StyledMenu = styled(Card)`
+  height: 100%;
+  margin-left:20px;
 
-const StyledEvents = styled.div`
-  position:relative;
-  padding: 25px 0;
-  height:100%;
-  border-radius: 15px;
-  margin-bottom:10px;
-  margin-top:5px;
-  border: 2px solid ${({ theme, activecolor }) => theme[activecolor]};
-  background-color:${({ theme, pagecolor }) => theme[pagecolor].backgroundElement};
-  box-shadow: 0 .25rem .75rem rgba(0,0,0,.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
-const StyledHeading = styled(Heading)`
+    ${({ theme }) => theme.mq.standard} {
+      margin: 0 0 10px 0;
+      height: 100px;
+    
+    }
+    ${({ theme }) => theme.mq.mobile} {
+      margin: 0 0 10px 0;
+      height: 100%;
+    
+    }
  
-width:100%;
-white-space: nowrap;
-
-overflow: hidden;
-padding:10px;
-
-  ::first-letter {
-    text-transform: uppercase;
-  }
 `;
+
+
 
 const StyledWraperList=styled.div`
   width:100%;
@@ -154,18 +147,25 @@ const StyledEventList=styled.div`
         ]
       })
     }
+
+    if(this.props.message!=prevProps.message && (this.props.message=='eventaccepted' ||  this.props.message=='eventrejected'))
+    {
+      this.setState({
+        statusItem: 4
+      });
+    }
   }
   
   componentDidMount() {
    
 
-    const { fetchEvents,fetchEventsFromCalendar,fetchToasts } = this.props;
+    const { fetchEvents,fetchToasts } = this.props;
   
   
 
     fetchEvents();
    
-    fetchEventsFromCalendar();
+  
     
     fetchToasts();
 
@@ -243,16 +243,18 @@ const StyledEventList=styled.div`
     const mark=event.title;
     const surname=event.extendedProps.surname;
     const avatar=event.extendedProps.avatar;
-
     const fccontent="<div class='fc-content'><img class='fc-avatar' src='"+avatar+"'><div class='fc-content2'>";
 
-    const fctime=(event.allDay==0) ? "<span class='fc-time'>"+start+" - "+end+"</span>" : "";
+    const fctime=(event.allDay==false) ? "<span class='fc-time'>"+start+" - "+end+"</span>" : "";
 
     const fctitle="<span class='fc-title'>"+mark+" <span class='fc-status "+ (status == 2 ? 'checked' : '') + (status == 1 ? 'question' : '') +"'></span></span><span class='fc-surname'>"+surname+"</span></div></div>";
     
     const fcresizable=(status==0) ? "<div class='fc-resizer fc-end-resizer'></div>" : "";
     
+   
     el.innerHTML=fccontent+fctime+fctitle+fcresizable;
+
+    
 
     if(status>0)
     {
@@ -317,7 +319,7 @@ const StyledEventList=styled.div`
   
     this.setState({ 
       idItem:eventClick.event.id,
-      titleItem: eventClick.event.title,
+      titleItem: eventClick.event.title ? eventClick.event.title : eventClick.event.extendedProps.event.mark,
       startItem: eventClick.event.start,
      // endItem: eventClick.event.end,
       endItem: endDate,
@@ -333,7 +335,7 @@ const StyledEventList=styled.div`
   }
 
   dateClick = dateClick => {
- 
+
 
     let endDate;
     let startDate;
@@ -374,7 +376,7 @@ const StyledEventList=styled.div`
   }
 
   changeTitle = (data) =>{
- 
+
     const elementsIndex = this.state.calendarEvents.findIndex(element => element.id === this.state.idItem )
     let newArray = [...this.state.calendarEvents]
 
@@ -382,13 +384,25 @@ const StyledEventList=styled.div`
   
     this.setState({
       calendarEvents: newArray,
+      titleItem:data[0]
       });
   
   
   }
 
+  changeContent = (data) =>{
+
+    this.setState({
+      
+      contentItem:data
+      });
+  
+  }
+
   setStartDate = (date) =>{
-    this.setState({ 
+  
+    this.setState({
+      ...this.state, 
       startItem:date
     })
   }
@@ -427,7 +441,7 @@ const StyledEventList=styled.div`
   }
 
   AddtoToastFromEvents = (data) => {
-   const list = data.filter(element => element.status == 2 && element.userid==localStorage.getItem('userID') )
+   const list = data.filter(element => element.status >= 2 && element.userid==localStorage.getItem('userID') )
    
        this.setState({ 
          
@@ -488,15 +502,17 @@ const StyledEventList=styled.div`
     render() {
   
 
-    const {isNewItemBarVisible,titleItem,contentItem,surnameItem,statusItem,startItem,endItem,alldayItem,useridItem,calendarEvents,toasts,toastListVisible} = this.state;
-    const {pageContext,events } = this.props;
- 
+    const {isNewItemBarVisible,idItem,titleItem,contentItem,surnameItem,statusItem,startItem,endItem,alldayItem,useridItem,calendarEvents,toasts,toastListVisible} = this.state;
+    const {isLoading,pageContext,events, message } = this.props;
+
+
+
     return (
-    <UserPageTemplate>
+    <CalendarTemplate>
  
        
           <StyledCalendar pagecolor={pageContext.pageColor} className="col-md-10">
-            <FullCalendar
+          { !isLoading ? ( <FullCalendar
               defaultView="dayGridMonth"
               header={{
                 left: "prev,next today",
@@ -523,24 +539,27 @@ const StyledEventList=styled.div`
               eventClick={this.eventClick}
               dateClick={window.screen.width >= 1024 ? '' : this.dateClick}
             />
+            ):  <Spinner activecolor={pageContext.sidebarColor} className="loader" /> }
             </StyledCalendar>
        
           <div  className="col-md-2">
             
             <StyledGrip>
               
-              <StyledEvents  pagecolor={pageContext.pageColor} activecolor={pageContext.sidebarColor}>
-                  
-                <StyledHeading  as="h1">{pageContext.t('events')}</StyledHeading>
-            
+            <StyledMenu pagecolor={pageContext.pageColor} >
+              <HeaderWrapper  activeColor={pageContext.sidebarColor}>
+                <Heading>{pageContext.t('events')}</Heading>
+              </HeaderWrapper>
+              <ListMenu pagecolor={pageContext.pageColor}>
                 <StyledWraperList id="external-events">
     
                       {events.map(event => (
                        
-                        <StyledEventList pagecolor={pageContext.pageColor} bordercolor={event.color} className="fc-event"  data-bordercolor={event.color} data={event.id} data-mark={event.mark} key={event.id}>{event.name}</StyledEventList>
+                        <StyledEventList pagecolor={pageContext.pageColor} bordercolor={event.borderColor} className="fc-event"  data-bordercolor={event.borderColor} data={event.id} data-mark={event.mark} key={event.id}>{event.name}</StyledEventList>
                       ))}
                 </StyledWraperList>
-              </StyledEvents>
+                </ListMenu>
+                </StyledMenu>
 
           
             </StyledGrip>
@@ -551,8 +570,8 @@ const StyledEventList=styled.div`
           ))}
           </StyledToasts>
      
-      <NewItemBar  ref={this.setWrapperRef} setEndDate={this.setEndDate} setStartDate={this.setStartDate} toasts={this.Toasts} changeTitle ={this.changeTitle} handleRemove={this.RemoveItem} handleClose={this.closeItemBar} title={titleItem} content={contentItem} status={statusItem} surname={surnameItem} start={startItem} end={endItem} userid={useridItem} allday={alldayItem} events={events} isVisible={isNewItemBarVisible} />
-    </UserPageTemplate>
+      <NewItemBar  ref={this.setWrapperRef} setEndDate={this.setEndDate} id={idItem} setStartDate={this.setStartDate} toasts={this.Toasts} changeTitle ={this.changeTitle} changeContent={this.changeContent} handleRemove={this.RemoveItem} handleClose={this.closeItemBar} title={titleItem} content={contentItem} status={statusItem} surname={surnameItem} start={startItem} end={endItem} userid={useridItem} allday={alldayItem} events={events} isVisible={isNewItemBarVisible} />
+    </CalendarTemplate>
     )
   }
 
@@ -567,7 +586,7 @@ Calendar.propTypes = {
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       mark: PropTypes.string.isRequired,
-      color: PropTypes.string.isRequired,
+      borderColor: PropTypes.string.isRequired,
     
     }),
   ),
@@ -609,14 +628,13 @@ Calendar.defaultProps = {
 
 const mapStateToProps = state => {
 
-  const { events,eventsfromcalendar, toasts} = state;
+  const { message, events,eventsfromcalendar, toasts,isLoading} = state;
  
-  return { events, eventsfromcalendar, toasts };
+  return { message, events, eventsfromcalendar, toasts,isLoading };
 };
 
 const mapDispatchToProps = dispatch => ({
   fetchEvents: () => dispatch(fetchEvents()),
-  fetchEventsFromCalendar: () => dispatch(fetchEventsFromCalendar()),
   fetchToasts: () => dispatch(fetchToasts()),
   updateToastStatus: (id) => dispatch(updateToastStatusAction(id))
 });

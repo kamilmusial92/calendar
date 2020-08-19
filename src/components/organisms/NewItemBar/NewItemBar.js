@@ -7,8 +7,10 @@ import withContext from 'hoc/withContext';
 import Heading from 'components/atoms/Heading/Heading';
 import Paragraph from 'components/atoms/Paragraph/Paragraph';
 import { connect } from 'react-redux';
-import { addItemToCalendar as addItemAction } from 'actions';
+import { addItemToCalendar as addItemAction, changeItemStatus as changeItemStatusAction } from 'actions';
 import { Formik, Form, Field } from 'formik';
+import {alerts} from 'helpers/alerts';
+
 
 import moment from 'moment';
 import DatePicker, { registerLocale, setDefaultLocale } from 'react-datepicker';
@@ -21,7 +23,7 @@ registerLocale('en', en);
 
 
 const StyledWrapper = styled.div`
-  border-left: 10px solid ${({ theme, activecolor }) => theme[activecolor]};
+  border-left: 10px solid ${({  activecolor }) => activecolor};
   z-index: 9999;
   position: fixed;
   display: flex;
@@ -74,16 +76,18 @@ const StyledInput = styled(Input)`
 
 const StyledButtons = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 `;
+
+
 
 const StyledWraperButtons = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const StyledButtonRemove = styled(Button)`
-  margin:40px 0px 0px 20px;
+const StyledButtonSmall = styled(Button)`
+  margin:40px 0px 0px 0px;
   
 `;
 
@@ -138,7 +142,7 @@ const datepicker = (lang,active,type,datetime, allday, setStartDate,setEndDate) 
 
 
   
-const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext, isVisible, addItemToCalendar, handleRemove, handleClose,title,content,status,surname,start,end,allday,userid,events }) => {
+const NewItemBar = ({alert, authuserinfo, message, setStartDate, setEndDate, toasts, changeTitle,changeContent, pageContext, isVisible,changeItemStatus, addItemToCalendar, handleRemove, handleClose,title,content,status,surname,start,end,allday,userid,events,id }) => {
 
   let endTime='';
 
@@ -175,8 +179,11 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
       useOutsideAlerter(wrapperRef);
     
     
-      
- 
+      const roleAdmin = authuserinfo && authuserinfo.roles && authuserinfo.roles.filter(role=>role.name=='SuperAdmin').length;
+      const roleCustomer = authuserinfo && authuserinfo.roles && authuserinfo.roles.filter(role=>role.name=='Customer').length ;
+      const permission = authuserinfo && authuserinfo.workplace && authuserinfo.workplace.permissions  && authuserinfo.workplace.permissions.filter(perm=>perm.name=='AcceptableEvents').length;
+   
+
       
     return (
     <StyledWrapper ref={wrapperRef} isVisible={isVisible} pagecolor={pageContext.pageColor} activecolor={pageContext.sidebarColor}>
@@ -221,25 +228,26 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
       {({ values, handleChange, handleBlur }) => (
          
         <StyledForm>
-         
+         {(userid ==localStorage.getItem('userID') && status == 0) ? 
           <StyledSelect  
           name="title" 
           onChange={(e) => {
             handleChange(e);
+          
             changeTitle(e.target.value.split(','));
         }}
        
           onBlur={handleBlur}
          
           className="form-control form-control-lg" 
-          disabled={(userid ==localStorage.getItem('userID') && status == 0) ? '' : "true"} 
+         
           
           >
 
           
           
           {events.filter(item => item.mark === values.title).map(item => (
-            <option key={item.id} selected  value={[item.mark,item.color]}>{item.name}</option>
+            <option key={item.id} selected  value={[item.mark,item.borderColor]}>{item.name}</option>
           ))
           }
 
@@ -247,21 +255,27 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
           {events.filter(event =>event.mark !== values.title).map(event => (
 
               
-              <option key={event.id}  value={[event.mark,event.color]}>{event.name}</option>
+              <option key={event.id}  value={[event.mark,event.borderColor]}>{event.name}</option>
             ))
           }
           
         </StyledSelect>
+        : ''}
 
           <StyledTextArea
             name="content"
             as="textarea"
-            onChange={handleChange}
+            onChange={(e) => {
+            handleChange(e);
+        
+            changeContent(e.target.value);
+        }}
             onBlur={handleBlur}
            
             disabled={(userid ==localStorage.getItem('userID') && status == 0) ? '' : "true"} 
             value={values.content}
           />
+           {alert && status==4 ? alerts(pageContext,'alerts.',message,'success') : ''}
         <StyledWraperButtons>
           <StyledButtons>
 
@@ -281,13 +295,31 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
             </Button>
 
           </StyledButtons>
+
           { userid == localStorage.getItem('userID') && status == 0 ? 
-            <StyledButtonRemove type="button" onClick={ handleRemove}  remove >
+            <StyledButtonSmall type="button" onClick={ handleRemove}  remove >
             {pageContext.t('button.remove')}
-            </StyledButtonRemove>
+            </StyledButtonSmall>
             : 
             ''
           }
+          
+          {  status == 1 && (roleAdmin || roleCustomer || permission)  ? 
+          <>
+          <StyledButtons>
+            <StyledButtonSmall type="button" onClick={()=>changeItemStatus(id,2)} accept >
+            {pageContext.t('button.accept')}
+            </StyledButtonSmall>
+            <StyledButtonSmall type="button" onClick={()=>changeItemStatus(id,3)} remove >
+            {pageContext.t('button.reject')}
+            </StyledButtonSmall>
+          </StyledButtons>
+          </>
+          : 
+          ''
+          }
+         
+
         </StyledWraperButtons>
        
        
@@ -307,6 +339,7 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
   
     isVisible: PropTypes.bool,
     addItemToCalendar: PropTypes.func.isRequired,
+    changeItemStatus: PropTypes.func.isRequired,
     pageContext: PropTypes.shape({
       sidebarColor:PropTypes.string,
       pageColor:PropTypes.string
@@ -339,12 +372,20 @@ const NewItemBar = ({setStartDate, setEndDate, toasts, changeTitle, pageContext,
     })
   };
   
+  const mapStateToProps = state => {
+
+    const { message,alert, authuserinfo} = state;
+  
+    return { message,alert, authuserinfo };
+  };
+
   const mapDispatchToProps = dispatch => ({
     addItemToCalendar: (values) => dispatch(addItemAction(values)),
+    changeItemStatus: (id,status) => dispatch(changeItemStatusAction(id,status)),
   });
   
   export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
   )(withContext(NewItemBar));
   

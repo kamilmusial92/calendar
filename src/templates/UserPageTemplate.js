@@ -2,9 +2,15 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Sidebar from 'components/organisms/Sidebar/Sidebar';
+import Spinner from 'components/atoms/Spinner/Spinner';
+
+import { fetchEventsFromCalendar } from 'actions';
+
+
 import { routes } from 'routes';
 import { Redirect } from 'react-router-dom';
 import withContext from 'hoc/withContext';
+import { connect } from 'react-redux';
 import {
 
   setLanguage,
@@ -17,11 +23,13 @@ const StyledWrapper = styled.div`
   background-color:${({ theme, pagecolor }) => theme[pagecolor].background};
   color:${({ theme, pagecolor }) => theme[pagecolor].text};
 
-  @media (max-width: 768px) {
+  ${({ theme }) => theme.mq.tablet} {
     padding-left:0px;
    padding-top:60px;
     }
 `;
+
+
 
 
 
@@ -39,7 +47,13 @@ class UserPageTemplate extends Component
     
   };
 
+  componentDidMount() {
+  
+    const { fetchEventsFromCalendar } = this.props;
+   
+    fetchEventsFromCalendar();
 
+  }
   
   
 
@@ -50,17 +64,20 @@ class UserPageTemplate extends Component
     }
 
     
-    const { children,pageContext } = this.props;
-
+    const { isLoading, children,pageContext } = this.props;
+  
     return (
     <StyledWrapper pagecolor={pageContext.pageColor}>
+
       <Sidebar handleSetPageColor={pageContext.handleSetPageColor} handleSetLanguage={this.handleSetLanguage} />
+     
       <div className="container-fluid">
-   
+     
         <div className="row">
         {children}
         </div>
-      </div>
+       
+      </div> 
     
      
     
@@ -88,5 +105,14 @@ UserPageTemplate.defaultProps = {
   })
 };
 
+const mapStateToProps = state => {
+  const {  isLoading} = state;
+ 
+  return { isLoading };
+};
 
-export default withContext(UserPageTemplate);
+const mapDispatchToProps = dispatch => ({
+  
+  fetchEventsFromCalendar: () => dispatch(fetchEventsFromCalendar()),
+});
+export default withContext(connect(mapStateToProps,mapDispatchToProps)(UserPageTemplate));

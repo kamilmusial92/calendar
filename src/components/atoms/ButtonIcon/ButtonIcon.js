@@ -1,9 +1,9 @@
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
 const ButtonIcon=styled.button`
     display:block;
-    width:${({small}) => small? '37px' : '67px'};
-    height:${({small}) => small? '37px' : '67px'};
+    width:67px;
+    height:67px;
     border-radius:20px;
     background-image:url(${({icon}) => icon});
     background-repeat:no-repeat;
@@ -13,12 +13,33 @@ const ButtonIcon=styled.button`
     outline: none !important;
     outline-offset: none !important;
     background-color: ${({active}) => active ? 'white' : 'transparent'};
-
+    transition: all .1s linear; 
     &.active {
     background-color: white;
     }
+    :hover:not(.active){
+      transform: scale(1.2);
+    }
 
-    @media (max-width: 768px) {
+    ${({ small }) =>
+     small &&
+      css`
+      width:37px;
+      height:37px;
+    `}
+
+    ${({ medium }) =>
+     medium &&
+      css`
+      width:57px;
+      height:57px;
+    &.active {
+    background-color: ${({ activeColor }) => activeColor };
+    }
+    `}
+
+
+    ${({ theme }) => theme.mq.tablet} {
       width:37px;
       height:37px;
 

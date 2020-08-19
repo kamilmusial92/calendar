@@ -6,7 +6,9 @@
         "sent": "wysłano",
         "accepted": "zaakceptowano",
         "rejected": "odrzucono"
-      }
+      },
+      "surname":"Imię i nazwisko",
+      "dateofnotification":"Data zgłoszenia"
      
     
     },
@@ -15,7 +17,18 @@
     "button":{
       "send": "Wyślij",
       "cancel": "Anuluj",
-      "remove": "Usuń"
+      "remove": "Usuń",
+      "accept": "Akceptuj",
+      "reject": "Odrzuć",
+      "save": "Zapisz",
+      "back": "Wstecz",
+      "inactive": "Dezaktywuj",
+      "active": "Aktywuj",
+      "changelogotype": "Zmień logotyp",
+      "changecolor": "Zmień kolor",
+      "permissions": "Uprawnienia",
+       "register":"Zarejestruj",
+       "signin":"Zaloguj się"
     },
     "from": "od",
     "to": "do",
@@ -26,6 +39,84 @@
         "hours": "Godziny",
         "category":"Kategoria",
         "filter":"Filtr"
+    },
+    "table":{
+      "action":"Opcje",
+      "view":"Zobacz"
+    },
+    "card":{
+      "edit": "Edytuj",
+      "changepass": "Zmień hasło",
+      "userdata": "Dane użytkownika",
+      "adduser":"Dodaj użytkownika", 
+      "users": "Lista pracowników",
+      "customers": "Lista klientów",
+      "workplaces": "Lista stanowisk",
+      "workplaceedit": "Edytuj stanowisko",
+      "workplacecreate":"Stwórz nowe stanowisko",
+      "stand": "Stanowisko",
+      "changeuserdata": "Zmień dane użytkownika",
+      "changepassword": "Zmień hasło",
+      "uploadimage":"Wgraj plik",
+      "workplacepermission":"Uprawnienia stanowiska: ",
+      "signup":"Rejestracja",
+      "signin":"Logowanie",
+      "arleadyregistered":"Jesteś już zarejestrowany?",
+      "clickhere":"Kliknij tutaj",
+      "notifications":"Powiadomienia",
+      "statistics":"Statystyki",
+      "registersuccess":"Zarejestrowano pomyślnie. Dane do logowania zostały wysłane na podany adres e-mail.",
+
+      "validate":{
+       
+        "incorrectoldpass": "Aktualne hasło jest niepoprawne.",
+        "passwordsdonotmatch": "Pola Nowe hasło i Powtórz nowe hasło nie są takie same.",
+        "passwordsdonotmatchregister": "Pola Hasło i Powtórz hasło nie są takie same",
+        "tooshort":"Za krótkie",
+        "invalidemail":"Niepoprawny format e-mail",
+        "required": "Wymagane"
+        
+      }
+    },
+    "alerts":{
+      "datahasbeenchanged": "Dane zostały zmienione.",
+      "dataauthhasbeenchanged": "Dane użytkownika zostały zmienione.",
+      "passwordchanged": "Hasło zostało zmienione.",
+      "uploadsuccess": "Avatar został zmieniony. Może to potrwać do kilku minut.",
+      "uploadlogotypesuccess": "Logotyp został zmieniony. Może to potrwać do kilku minut.",
+      "userhasbeenadded": "Użytkownik został dodany.",
+      "sidebarhasbeenchanged": "Kolor szablonu został zmieniony.",
+      "workplacehasbeenchanged":"Stanowisko zostało zmienione.",
+      "userhasworkplace":"Nie można usunąć, ponieważ ktoś z pracowników posiada to stanowisko!",
+      "workplacehasbeencreated": "Stworzono nowe stanowisko.",
+      "workplacehasbeenremoved": "Stanowisko zostało usunięte.",
+      "changestatussuccess": "Status użytkownika został zmieniony.",
+      "deleteusersuccess": "Użytkownik został usunięty.",
+      "permissionhasbeenchanged": "Uprawnienia zostały zmienione.",
+      "customercreated":"Konto klienta zostało utworzone.",
+      "eventaccepted":"Wydarzenie zostało zaakceptowane.",
+      "eventrejected":"Wydarzenie zostało odrzucone."
+    },
+    "company":{
+      "name":"Nazwa firmy",
+      "url": "Strona www",
+      "data": "Dane firmy",
+      "add":"Dodaj nowego klienta"
+      
+    }, 
+    "user":{
+      "active":"Aktywny",
+      "inactive": "Nieaktywny"
+    },
+    "version":"Dostęp",
+    "name": "Nazwa",
+
+    "input":{
+      "fullname":"Imię i nazwisko",
+      "company": "Nazwa firmy",
+      "password": "Hasło",
+      "confirmpassword": "Powtórz hasło",
+      "or":"ALBO"
     }
    
  

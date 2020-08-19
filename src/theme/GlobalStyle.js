@@ -20,6 +20,10 @@ const GlobalStyle = createGlobalStyle`
     font-size: 1.6rem;
     font-family: "Montserrat", sans-serif;
   }
+  a:hover{
+    text-decoration: none;
+    color:black;
+  }
   .statusicon{
 
     margin-left:5px;
@@ -82,8 +86,10 @@ const GlobalStyle = createGlobalStyle`
 }
 .fc-day-grid-event .fc-avatar {
  width:40px;
+ height:40px;
  padding-bottom: 3px;
  border-radius: 5px;
+
 }
 
 
@@ -189,6 +195,79 @@ const GlobalStyle = createGlobalStyle`
 #external-events input{
   min-width: 14px;
 }
+
+.checkbox:not(:checked),
+.checkbox:checked {
+            position: absolute;
+            left: -9999px;
+        }
+        .checkbox:not(:checked) + label,
+        .checkbox:checked + label {
+            position: relative;
+            padding-left: 29px;
+            cursor: pointer;
+            margin-bottom: 4px;
+            display: inline-block;
+            font-size: 17px;
+        }
+        /* checkbox aspect */
+        .checkbox:not(:checked) + label:before,
+        .checkbox:checked + label:before {
+            content: '';
+            position: absolute;
+            left: 1px; top: 1px;
+            width: 22px; height: 22px;
+            border: 2px solid #cccccc;
+            background: #ffffff;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
+        }
+        /* checked mark aspect */
+        .checkbox:not(:checked) + label:after,
+        .checkbox:checked + label:after {
+            content: '✔';
+            position: absolute;
+            top: 0px; left: 5px;
+            font-size: 20px;
+            line-height: 1.2;
+            color: #09ad7e;
+            transition: all .2s;
+        }
+        /* checked mark aspect changes */
+        .checkbox:not(:checked) + label:after {
+            opacity: 0;
+            transform: scale(0);
+        }
+        .checkbox:checked + label:after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* disabled checkbox */
+        .checkbox:disabled:not(:checked) + label:before,
+        .checkbox:disabled:checked + label:before {
+            box-shadow: none;
+            border-color: #999999;
+            background-color: #dddddd;
+        }
+        .checkbox:disabled:checked + label:after {
+            color: #999999;
+        }
+        .checkbox:disabled + label {
+            color: #aaaaaa;
+        }
+        /* accessibility */
+        .checkbox:checked:focus + label:before,
+        .checkbox:not(:checked):focus + label:before {
+            border: 2px dotted #0000ff;
+        }
+        /* hover style just for information */
+        label:hover:before {
+            border: 2px solid #4778d9!important;
+            background: #ffffff
+        }
+
+
+
 `;
 
 export default GlobalStyle;

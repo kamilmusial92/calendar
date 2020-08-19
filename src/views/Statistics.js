@@ -2,19 +2,27 @@ import React, { Component }  from 'react'
 import styled from 'styled-components';
 
 import UserPageTemplate from 'templates/UserPageTemplate';
-import Table from 'components/molecules/Table/Table';
+import Heading from 'components/atoms/Heading/Heading';
+import SmallSpinner from 'components/atoms/Spinner/SmallSpinner';
+
+import StatisticsTable from 'components/molecules/Table/StatisticsTable';
 import EventsTable from 'components/molecules/EventsTable/EventsTable';
 import Paragraph from 'components/atoms/Paragraph/Paragraph';
-import Button from 'components/atoms/Button/Button';
+import Card from 'components/molecules/Card/Card';
+import HeaderWrapper from 'components/atoms/HeaderWrapper/HeaderWrapper';
+import InnerWrapper from 'components/atoms/InnerWrapper/InnerWrapper';
 import DropdownButton from 'components/atoms/DropdownButton/DropdownButton';
 import PropTypes from 'prop-types';
+import ListMenu from 'components/atoms/ListMenu/ListMenu';
 
 import { StatusText, DateFormat} from 'helpers/events';
 import withContext from 'hoc/withContext';
-import { fetchEventsFromCalendar, fetchEvents, } from 'actions';
+import {  fetchEvents } from 'actions';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker, { registerLocale, setDefaultLocale } from 'react-datepicker';
+import gsap from "gsap";
+
 import "react-datepicker/dist/react-datepicker.css";
 import pl from 'react-datepicker/node_modules/date-fns/locale/pl';
 import en from 'react-datepicker/node_modules/date-fns/locale/en-GB';
@@ -22,6 +30,59 @@ import en from 'react-datepicker/node_modules/date-fns/locale/en-GB';
 registerLocale('pl', pl);
 registerLocale('en', en);
 
+
+
+const StyledWrapper = styled.div`
+  display:flex;
+  padding-left: 100px;
+  padding-top:20px;
+  max-height: 100vh;
+
+    ${({ theme }) => theme.mq.tablet} {
+        padding-left:10%;
+        margin-top:40px;
+        max-width:700px;
+    }
+    ${({ theme }) => theme.mq.mobile} {
+       
+           padding-left:10%;
+           padding-right:5%;
+           max-width:300px;
+    }
+
+    ${({ theme }) => theme.mq.standard} {
+    
+    flex-direction:column-reverse;
+    max-width:700px;
+    }
+
+
+ 
+`;
+
+const StyledInnerWrapper= styled(InnerWrapper)`
+   
+   
+    max-height:100%;
+    
+`;
+
+const StyledMenu = styled(Card)`
+  height: 100%;
+  margin-left:20px;
+
+    ${({ theme }) => theme.mq.standard} {
+      margin: 0 0 10px 0;
+      height: 100px;
+    
+    }
+    ${({ theme }) => theme.mq.mobile} {
+      margin: 0 0 10px 0;
+      height: 100%;
+    
+    }
+ 
+`;
 
 
 
@@ -55,7 +116,18 @@ const StyledParagraph=styled(Paragraph)`
 class Statistics extends Component {
 
  
+  constructor(){
+    super();
+    this.ShowUserInfoWrap = null;
+    this.FormUserInfoWrap = null;
   
+    this.tlUserInfo = null;
+    this.tlUserInfoForm = null;
+    
+
+    this.toggleUserInfoForm = this.toggleUserInfo.bind(this);
+   
+}
 
     state = {
       calendarEvents:[],
@@ -80,11 +152,11 @@ class Statistics extends Component {
         let dateend=DateFormat(event.end,'end',event.allDay);
         const status=StatusText(event.status)
         newEventsfromcalendar.push({
-          'id' :event.id,
-          'date':datestart+' - '+dateend,
-         'status':status ,
           
-           'category':event.event_name
+        'date':datestart+' - '+dateend,
+        'status':status ,
+          
+        'category':event.event_name
         })
       });
     
@@ -132,14 +204,24 @@ class Statistics extends Component {
   
     componentDidMount() {
   
-      const { fetchEvents,fetchEventsFromCalendar } = this.props;
+      const { fetchEvents } = this.props;
      
       fetchEvents();
 
-      fetchEventsFromCalendar();
+      this.tlUserInfo = gsap.timeline({defaults:{ease:'power3.inOut'}})
+    .set([this.ShowUserInfoWrap,this.FormUserInfoWrap, this.FormChangePasswordWrap], {autoAlpha: 0})
+    .fromTo(this.ShowUserInfoWrap, { y: "-100"}, {duration: 1, y:"+=100", autoAlpha:1})
 
 
       
+    }
+
+    toggleUserInfo(){
+
+      this.tlUserInfo.to(this.ShowUserInfoWrap, {duration: 0.4,  autoAlpha:0});
+      this.tlUserInfoForm = gsap.timeline({defaults:{ease:'power3.inOut'}})
+     
+      .fromTo(this.FormUserInfoWrap, { y: "-100"}, {duration: 1, y:"+=100", autoAlpha:1})
     }
 
     setStartDate = (date) =>{
@@ -188,47 +270,74 @@ class Statistics extends Component {
   
 
     const {calendarEvents,filter,startItem,endItem} = this.state;
-    const {pageContext,eventsfromcalendar,events } = this.props;
-console.log(calendarEvents)
+    const {isLoadingContent,pageContext,events } = this.props;
+
+    const headers=[];
+    headers.push(pageContext.t('statistics.date'),'Status',pageContext.t('statistics.category'))
+
+
     return (
     <UserPageTemplate >
-      <div className="col-md-10">
-      <StyledSelectDates>
-        <StyledDates >
-       
-         
-          <DatePicker
-          selected={Date.parse(moment(startItem))}
-          onChange={date =>this.setStartDate(date)}
+      <StyledWrapper ref={div => this.ShowUserInfoWrap = div}>
+      <Card pagecolor={pageContext.pageColor}>
+          <HeaderWrapper  activeColor={pageContext.sidebarColor}>
+            <Heading>{pageContext.t('card.statistics')}</Heading>
+                    
+                
+          </HeaderWrapper>
+          <StyledInnerWrapper  >
+          {!isLoadingContent ? 
+          <>
+          <StyledSelectDates>
+            <StyledDates >
+        
           
-          locale={pageContext.t('lang')}
-          dateFormat="dd-MM-yyyy"
-          /> 
-          <StyledParagraph>-</StyledParagraph>
-          <DatePicker
-          selected={Date.parse(moment(endItem))}
-          onChange={date =>this.setEndDate(date)}
-          
-          locale={pageContext.t('lang')}
-          dateFormat="dd-MM-yyyy"
-          />
-          
-        </StyledDates>
+            <DatePicker
+            selected={Date.parse(moment(startItem))}
+            onChange={date =>this.setStartDate(date)}
+            
+            locale={pageContext.t('lang')}
+            dateFormat="dd-MM-yyyy"
+            /> 
+            <StyledParagraph>-</StyledParagraph>
+            <DatePicker
+            selected={Date.parse(moment(endItem))}
+            onChange={date =>this.setEndDate(date)}
+            
+            locale={pageContext.t('lang')}
+            dateFormat="dd-MM-yyyy"
+            />
+            
+          </StyledDates>
 
-        <StyledButtons>
-          <StyledDropdownButton>
-            <DropdownButton setStartDate={this.setStartDate} setEndDate={this.setEndDate} pagecolor={pageContext.pageColor}/>
-          </StyledDropdownButton>
+            <StyledButtons>
+              <StyledDropdownButton>
+                <DropdownButton setStartDate={this.setStartDate} setEndDate={this.setEndDate} pagecolor={pageContext.pageColor}/>
+              </StyledDropdownButton>
 
-        </StyledButtons>
+            </StyledButtons>
 
-      </StyledSelectDates>
+          </StyledSelectDates>
 
-      <Table filter={filter} eventsfromcalendar={calendarEvents} />
-      </div>
-      <div className="col-md-2">
-      <EventsTable filter={filter} addToFilter={this.addToFilter} events={events}/>
-      </div>
+        <StatisticsTable filter={filter} headers={headers} body={calendarEvents} />
+        </>
+      : <SmallSpinner activecolor={pageContext.sidebarColor} className="loader" />}
+
+      </StyledInnerWrapper>
+
+      </Card>
+
+      <StyledMenu pagecolor={pageContext.pageColor} >
+              <HeaderWrapper  activeColor={pageContext.sidebarColor}>
+                <Heading>Menu</Heading>
+              </HeaderWrapper>
+
+              <ListMenu pagecolor={pageContext.pageColor}>
+                <EventsTable filter={filter} addToFilter={this.addToFilter} events={events}/>
+              </ListMenu>
+      </StyledMenu>
+      
+      </StyledWrapper>
     </UserPageTemplate>
     )
   }
@@ -273,14 +382,14 @@ Statistics.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { events,eventsfromcalendar} = state;
+  const { events,eventsfromcalendar, isLoadingContent} = state;
  
-  return { events,eventsfromcalendar };
+  return { events,eventsfromcalendar, isLoadingContent };
 };
 
 const mapDispatchToProps = dispatch => ({
   fetchEvents: () => dispatch(fetchEvents()),
-  fetchEventsFromCalendar: () => dispatch(fetchEventsFromCalendar()),
+ 
 });
 
 export default withContext(connect(mapStateToProps,mapDispatchToProps)(Statistics));

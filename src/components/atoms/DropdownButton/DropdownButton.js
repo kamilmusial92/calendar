@@ -12,7 +12,7 @@ const StyledDropDownButton= styled(Dropdown)`
      width:150px;
      font-weight: 600;
     
-     background-color:${({ theme, pagecolor }) => theme[pagecolor].backgroundElement};
+     background-color:${({ theme, pagecolor }) => theme[pagecolor].background};
      color:${({ theme, pagecolor }) => theme[pagecolor].text};
      border: none;
     

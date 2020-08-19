@@ -11,21 +11,19 @@ const Input = styled.input`
   outline: none;
 
   ::placeholder {
-    text-transform: uppercase;
-    letter-spacing: 1px;
+   
+   
     color: ${({ theme }) => theme.grey300};
   }
 
   
 
-  ${({search}) =>
-    search && css`
-    font-size: ${({ theme }) => theme.fontSize.xs};
-    padding: 10px 20px 10px 40px;
-    background-image: url(${() => magnifierIcon});
-    background-size: 15px;
-    background-position: 15px 50%;
-    background-repeat:no-repeat;
+  ${({card}) =>
+    card && css`
+    padding: 5px 10px;
+    border:1px solid #ced4da;
+    border-radius:.25rem;
+    margin:5px 0 10px 0;
     `
   }
 `;

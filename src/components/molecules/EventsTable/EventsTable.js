@@ -23,6 +23,7 @@ const StyledEventList=styled.div`
       width:100%;
       cursor:pointer;
     }
+ 
 `;
 
 const StyledEvents = styled.div`
@@ -32,7 +33,7 @@ const StyledEvents = styled.div`
   border-radius: 15px;
   margin-bottom:10px;
   margin-top:5px;
-  border: 2px solid ${({ theme, activecolor }) => theme[activecolor]};
+  border: 2px solid ${({ theme, activecolor }) => activecolor};
   background-color:${({ theme, pagecolor }) => theme[pagecolor].backgroundElement};
   box-shadow: 0 .25rem .75rem rgba(0,0,0,.1);
   
@@ -68,19 +69,16 @@ class EventsTable extends Component {
 
 
         return (
-            <StyledEvents  pagecolor={pageContext.pageColor} activecolor={pageContext.sidebarColor}>
-                  
-            <StyledHeading  as="h1">{pageContext.t('statistics.filter')}</StyledHeading>
-        
+         
             <StyledWraperList id="external-events">
 
                   {events.map(event => (
                   
-                    <StyledEventList  pagecolor={pageContext.pageColor} bordercolor={event.color}   > <input id={event.id}  name="filter" checked={filter.filter(element=>element===event.name).length > 0 } type="checkbox" />
+                    <StyledEventList  pagecolor={pageContext.pageColor} bordercolor={event.borderColor}   > <input id={event.id}  name="filter" checked={filter.filter(element=>element===event.name).length > 0 } type="checkbox" />
                     <label for={event.id} onClick={()=>addToFilter(event.name)}>{event.name}</label></StyledEventList>
                   ))}
             </StyledWraperList>
-          </StyledEvents>
+         
         )
     }
 }
