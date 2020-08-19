@@ -85,8 +85,7 @@ const GlobalStyle = createGlobalStyle`
   padding: 2px 2px 2px 2px;
 }
 .fc-day-grid-event .fc-avatar {
- width:40px;
- height:40px;
+
  padding-bottom: 3px;
  border-radius: 5px;
 
@@ -114,6 +113,10 @@ const GlobalStyle = createGlobalStyle`
   border: 1px solid #3788d8;
   /*padding: 10px;*/
   border-left: 4px solid;
+}
+.fc-button-group
+{
+  display: block;
 }
 
 .fc-event,

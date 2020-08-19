@@ -37,6 +37,16 @@ const StyledCalendar=styled.div`
   /* overcomes inline z-index */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+.fc-avatar{
+  max-width:40px;
+ max-height:40px;
+
+  ${({ theme }) => theme.mq.mobile} {
+   max-width:0px;
+    max-height:0px;
+  }
+  
+}
 `;
 
 const StyledGrip = styled.div`
